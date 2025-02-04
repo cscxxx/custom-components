@@ -1,6 +1,6 @@
-import React, { useState, useRef, useContext, useEffect } from "react";
-import { InputRef, Form, Input } from "antd";
-import { EditableContext } from "../ctx.ts";
+import { Form, Input, InputRef } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import { useStore } from "../ctx.ts";
 import type { EditableCellProps } from "../types.d.ts";
 
 export const EditableCell: React.FC<EditableCellProps> = ({
@@ -13,30 +13,37 @@ export const EditableCell: React.FC<EditableCellProps> = ({
   ...restProps
 }) => {
   const [editing, setEditing] = useState(false);
-  const inputRef = useRef<InputRef>(null);
-  const { form } = useContext(EditableContext)!;
 
-  useEffect(() => {
-    if (editing) {
-      inputRef.current!.focus();
-    }
-  }, [editing]);
+  const inputRef = useRef<InputRef>(null);
+
+  const form = useStore();
 
   const toggleEdit = () => {
     setEditing(!editing);
-    form.setFieldsValue({ [dataIndex]: record[dataIndex] });
+    form?.setFieldsValue({ [dataIndex]: record[dataIndex] });
   };
 
   const save = async () => {
     try {
-      const values = await form.validateFields();
-
+      const values = await form?.validateFields();
       toggleEdit();
       handleSave({ ...record, ...values });
     } catch (errInfo) {
       console.log("Save failed:", errInfo);
     }
   };
+
+  useEffect(() => {
+    if (editing) {
+      inputRef?.current!.focus();
+    }
+  }, [editing]);
+
+  useEffect(() => {
+    if (editable) {
+      toggleEdit();
+    }
+  }, [editable]);
 
   let childNode = children;
 

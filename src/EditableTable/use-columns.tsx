@@ -2,8 +2,6 @@ import { Popconfirm } from "antd";
 import React from "react";
 import { ColumnTypes, DataType } from "./types";
 
-
-
 export default ({ dataSource, setDataSource }) => {
   const handleDelete = (key: React.Key) => {
     const newData = dataSource.filter((item) => item.key !== key);
@@ -34,6 +32,7 @@ export default ({ dataSource, setDataSource }) => {
     {
       title: "age",
       dataIndex: "age",
+      editable: true,
     },
     {
       title: "address",
@@ -46,7 +45,9 @@ export default ({ dataSource, setDataSource }) => {
         dataSource.length >= 1 ? (
           <Popconfirm
             title="Sure to delete?"
-            onConfirm={() => handleDelete(record.key)}
+            onConfirm={() => {
+              handleDelete(record.key);
+            }}
           >
             <a>Delete</a>
           </Popconfirm>
