@@ -22,17 +22,20 @@ export default ({ dataSource, setDataSource }) => {
   const defaultColumns: (ColumnTypes[number] & {
     editable?: boolean;
     dataIndex: string;
+    required?: boolean;
   })[] = [
     {
       title: "name",
       dataIndex: "name",
-      width: "30%",
       editable: true,
+      required: true,
+      width: "500px",
     },
     {
       title: "age",
       dataIndex: "age",
       editable: true,
+      width: "500px",
     },
     {
       title: "address",
@@ -66,6 +69,7 @@ export default ({ dataSource, setDataSource }) => {
         editable: col.editable,
         dataIndex: col.dataIndex,
         title: col.title,
+        required: col.required,
         handleSave,
       }),
     };

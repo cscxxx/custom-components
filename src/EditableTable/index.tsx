@@ -1,7 +1,6 @@
 import { Button, Table } from "antd";
 import "antd/dist/antd.css";
 import React, { useState } from "react";
-import { useStore } from "./ctx.ts";
 import "./index.css";
 import { EditableCell } from "./TableEditableBody/EditableCell.tsx";
 import { EditableRow } from "./TableEditableBody/EditableRow.tsx";
@@ -21,7 +20,6 @@ const App: React.FC = () => {
   const { columns } = useColumns({ dataSource, setDataSource });
 
   const [count, setCount] = useState(2);
-  const form = useStore();
 
   const handleAdd = () => {
     const newData: DataType = {

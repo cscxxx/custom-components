@@ -1,6 +1,5 @@
-import { Form, Input, InputRef } from "antd";
+import { Input, InputRef } from "antd";
 import React, { useEffect, useRef, useState } from "react";
-import { useStore } from "../ctx.ts";
 import type { EditableCellProps } from "../types.d.ts";
 
 export const EditableCell: React.FC<EditableCellProps> = ({
@@ -12,63 +11,42 @@ export const EditableCell: React.FC<EditableCellProps> = ({
   handleSave,
   ...restProps
 }) => {
-  const [editing, setEditing] = useState(false);
+  const [edit, toggleEdit] = useState<boolean>(false);
+  const [valied, setValied] = useState<boolean>(true);
 
   const inputRef = useRef<InputRef>(null);
 
-  const form = useStore();
-
-  const toggleEdit = () => {
-    setEditing(!editing);
-    form?.setFieldsValue({ [dataIndex]: record[dataIndex] });
+  const save = async (e) => {
+    if (e.target.value) {
+      setValied(true);
+    } else {
+      setValied(false);
+    }
+    handleSave({
+      ...record,
+      address: Math.round(Math.random() * 100),
+    });
   };
-
-  const save = async () => {
-    try {
-      const values = await form?.validateFields();
-      toggleEdit();
-      handleSave({ ...record, ...values });
-    } catch (errInfo) {
-      console.log("Save failed:", errInfo);
-    }
-  };
-
-  useEffect(() => {
-    if (editing) {
-      inputRef?.current!.focus();
-    }
-  }, [editing]);
-
-  useEffect(() => {
-    if (editable) {
-      toggleEdit();
-    }
-  }, [editable]);
 
   let childNode = children;
 
+  useEffect(() => {
+    const timeId = setTimeout(() => {
+      if (!record?.[dataIndex]) {
+        setValied(false);
+      }
+    }, 300);
+    return () => {
+      clearTimeout(timeId);
+    };
+  }, []);
+
   if (editable) {
-    childNode = editing ? (
-      <Form.Item
-        style={{ margin: 0 }}
-        name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${title} is required.`,
-          },
-        ]}
-      >
+    childNode = (
+      <>
         <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-      </Form.Item>
-    ) : (
-      <div
-        className="editable-cell-value-wrap"
-        style={{ paddingRight: 24 }}
-        onClick={toggleEdit}
-      >
-        {children}
-      </div>
+        {valied ? null : <div style={{ color: "red" }}>必填</div>}
+      </>
     );
   }
 

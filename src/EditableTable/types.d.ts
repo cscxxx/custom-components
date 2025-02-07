@@ -4,7 +4,7 @@ export interface Item {
   key: string;
   name: string;
   age: string;
-  address: string;
+  address: string | number;
 }
 
 export interface EditableCellProps {
@@ -13,6 +13,8 @@ export interface EditableCellProps {
   children: React.ReactNode;
   dataIndex: keyof Item;
   record: Item;
+  required?: boolean;
+  width?: number | string;
   handleSave: (record: Item) => void;
 }
 
