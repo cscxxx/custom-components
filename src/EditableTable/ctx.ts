@@ -1,7 +1,7 @@
 import { FormInstance } from "antd/es/form";
 import React, { useContext } from "react";
 
-type IStore = { form: FormInstance } | any;
+type IStore = { form: FormInstance };
 
 export const EditableContext = React.createContext<IStore>({} as IStore);
 

@@ -1,4 +1,4 @@
-import { Form, Input, InputRef } from "antd";
+import { Form, InputRef } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "../ctx.ts";
 import type { EditableCellProps } from "../types.d.ts";
@@ -9,6 +9,7 @@ export const EditableCell: React.FC<EditableCellProps> = ({
   children,
   dataIndex,
   record,
+  rules,
   handleSave,
   ...restProps
 }) => {
@@ -16,7 +17,7 @@ export const EditableCell: React.FC<EditableCellProps> = ({
 
   const inputRef = useRef<InputRef>(null);
 
-  const form = useStore();
+  const { form } = useStore();
 
   const toggleEdit = () => {
     setEditing(!editing);
@@ -34,41 +35,23 @@ export const EditableCell: React.FC<EditableCellProps> = ({
   };
 
   useEffect(() => {
-    if (editing) {
-      inputRef?.current!.focus();
-    }
-  }, [editing]);
-
-  useEffect(() => {
-    if (editable) {
-      toggleEdit();
-    }
-  }, [editable]);
+    // 初始化时验证下表单
+    form.validateFields(["age"]);
+    form.setFields([
+      {
+        name: "name",
+        errors: ["Username is required!"],
+      },
+    ]);
+  }, []);
 
   let childNode = children;
 
   if (editable) {
-    childNode = editing ? (
-      <Form.Item
-        style={{ margin: 0 }}
-        name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${title} is required.`,
-          },
-        ]}
-      >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-      </Form.Item>
-    ) : (
-      <div
-        className="editable-cell-value-wrap"
-        style={{ paddingRight: 24 }}
-        onClick={toggleEdit}
-      >
+    childNode = (
+      <Form.Item style={{ margin: 0 }} name={dataIndex} rules={rules ?? []}>
         {children}
-      </div>
+      </Form.Item>
     );
   }
 

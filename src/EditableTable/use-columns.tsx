@@ -1,5 +1,7 @@
-import { Popconfirm } from "antd";
+import { Input, Popconfirm } from "antd";
+import { RuleObject } from "antd/es/form";
 import React from "react";
+import MyInput from "./MyInput.tsx";
 import { ColumnTypes, DataType } from "./types";
 
 export default ({ dataSource, setDataSource }) => {
@@ -22,17 +24,42 @@ export default ({ dataSource, setDataSource }) => {
   const defaultColumns: (ColumnTypes[number] & {
     editable?: boolean;
     dataIndex: string;
+    rules?: RuleObject[];
   })[] = [
     {
       title: "name",
       dataIndex: "name",
       width: "30%",
       editable: true,
+      rules: [
+        {
+          required: true,
+          message: "test",
+        },
+      ],
+      render: (value: any, record: any, index: number) => {
+        return <MyInput />;
+      },
     },
     {
       title: "age",
       dataIndex: "age",
       editable: true,
+      rules: [
+        {
+          required: true,
+          message: "age",
+        },
+      ],
+      render: (value: any, record: any, index: number) => {
+        return (
+          <Input
+            onPressEnter={() => {
+              console.log(121211);
+            }}
+          />
+        );
+      },
     },
     {
       title: "address",
@@ -61,13 +88,17 @@ export default ({ dataSource, setDataSource }) => {
     }
     return {
       ...col,
-      onCell: (record: DataType) => ({
-        record,
-        editable: col.editable,
-        dataIndex: col.dataIndex,
-        title: col.title,
-        handleSave,
-      }),
+      onCell: (record: DataType) => {
+        debugger;
+        return {
+          record,
+          // editable: col.editable,
+          // dataIndex: col.dataIndex,
+          // title: col.title,
+          ...col,
+          handleSave,
+        };
+      },
     };
   });
 
