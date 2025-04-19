@@ -1,4 +1,4 @@
-import { Rule, RuleObject } from "antd/lib/form";
+import { RuleObject } from "antd/lib/form";
 import Table from "antd/lib/table/Table";
 
 export interface Item {
@@ -15,6 +15,8 @@ export interface EditableCellProps {
   dataIndex: keyof Item;
   record: Item;
   rules: RuleObject[];
+  valueType: string;
+  options?: { label: string; value: string }[];
   handleSave: (record: Item) => void;
 }
 

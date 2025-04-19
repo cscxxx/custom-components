@@ -1,6 +1,5 @@
-import { Form, InputRef } from "antd";
-import React, { useEffect, useRef, useState } from "react";
-import { useStore } from "../ctx.ts";
+import { Form, Input, InputNumber, Select } from "antd";
+import React from "react";
 import type { EditableCellProps } from "../types.d.ts";
 
 export const EditableCell: React.FC<EditableCellProps> = ({
@@ -10,50 +9,32 @@ export const EditableCell: React.FC<EditableCellProps> = ({
   dataIndex,
   record,
   rules,
-  handleSave,
+  valueType,
+  options,
   ...restProps
 }) => {
-  const [editing, setEditing] = useState(false);
-
-  const inputRef = useRef<InputRef>(null);
-
-  const { form } = useStore();
-
-  const toggleEdit = () => {
-    setEditing(!editing);
-    form?.setFieldsValue({ [dataIndex]: record[dataIndex] });
-  };
-
-  const save = async () => {
-    try {
-      const values = await form?.validateFields();
-      toggleEdit();
-      handleSave({ ...record, ...values });
-    } catch (errInfo) {
-      console.log("Save failed:", errInfo);
-    }
-  };
-
-  useEffect(() => {
-    // 初始化时验证下表单
-    form.validateFields(["age"]);
-    form.setFields([
-      {
-        name: "name",
-        errors: ["Username is required!"],
-      },
-    ]);
-  }, []);
-
   let childNode = children;
-
   if (editable) {
-    childNode = (
-      <Form.Item style={{ margin: 0 }} name={dataIndex} rules={rules ?? []}>
-        {children}
-      </Form.Item>
-    );
+    if (valueType === "select") {
+      childNode = (
+        <Form.Item style={{ margin: 0 }} name={dataIndex} rules={rules ?? []}>
+          <Select options={options ?? []} allowClear></Select>
+        </Form.Item>
+      );
+    } else if (valueType === "number") {
+      childNode = (
+        <Form.Item style={{ margin: 0 }} name={dataIndex} rules={rules ?? []}>
+          <InputNumber style={{ width: "100%" }} type="number"></InputNumber>
+        </Form.Item>
+      );
+    } else {
+      childNode = (
+        <Form.Item style={{ margin: 0 }} name={dataIndex} rules={rules ?? []}>
+          <Input></Input>
+          {/* {children} */}
+        </Form.Item>
+      );
+    }
   }
-
   return <td {...restProps}>{childNode}</td>;
 };
