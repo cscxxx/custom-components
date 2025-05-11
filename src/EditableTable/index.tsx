@@ -8,6 +8,8 @@ import { ColumnTypes, DataType } from "./types";
 import useColumns from "./use-columns.tsx";
 
 const App: React.FC = () => {
+  console.log("App");
+
   const [dataSource, setDataSource] = useState<DataType[]>([
     {
       key: "0",
