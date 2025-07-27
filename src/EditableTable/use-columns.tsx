@@ -1,14 +1,53 @@
 import { Popconfirm } from "antd";
 import { RuleObject } from "antd/es/form";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ColumnTypes, DataType } from "./types";
 
 export default ({ dataSource, setDataSource }) => {
+  const [option, setOption] = useState<
+    {
+      value: string;
+      label: string;
+    }[]
+  >([
+    {
+      value: "1",
+      label: "1",
+    },
+  ]);
+
+  useEffect(() => {
+    const is = setTimeout(() => {
+      setOption([
+        {
+          value: "2",
+          label: "2",
+        },
+        {
+          value: "3",
+          label: "3",
+        },
+        {
+          value: "4",
+          label: "4",
+        },
+        {
+          value: "5",
+          label: "5",
+        },
+      ]);
+    }, 6000);
+    return () => {
+      clearTimeout(is);
+    };
+  }, []);
+
   const columns = useMemo(() => {
     const handleDelete = (key: React.Key) => {
       const newData = dataSource?.filter((item) => item.key !== key);
       setDataSource(newData);
     };
+
     const defaultColumns: (ColumnTypes[number] & {
       editable?: boolean;
       dataIndex: string;
@@ -25,20 +64,7 @@ export default ({ dataSource, setDataSource }) => {
         width: "30%",
         editable: true,
         valueType: "select",
-        options: [
-          {
-            value: "1",
-            label: "1",
-          },
-          {
-            value: "2",
-            label: "2",
-          },
-          {
-            value: "3",
-            label: "3",
-          },
-        ],
+        options: option,
         rules: [
           {
             required: true,
@@ -55,19 +81,43 @@ export default ({ dataSource, setDataSource }) => {
             required: true,
             message: "age",
           },
+          {
+            validator(rule, value, callback) {
+              if (!Number.isFinite(Number(value))) {
+                callback("请输入数字");
+              } else {
+                callback();
+              }
+            },
+          },
         ],
         valueType: "number",
       },
       {
-        title: "address",
-        dataIndex: "address",
+        title: "address1",
+        dataIndex: "address1",
         editable: true,
         rules: [
           {
             required: true,
             message: "age",
           },
+          {
+            validator(rule, value, callback) {
+              if (value?.length > 100) {
+                callback("地址不能超过100个字符");
+              } else if (!value) {
+                callback("请输入地址");
+              } else {
+                callback();
+              }
+            },
+          },
         ],
+      },
+      {
+        title: "address2",
+        dataIndex: "address2",
       },
       {
         title: "operation",
@@ -100,6 +150,6 @@ export default ({ dataSource, setDataSource }) => {
         },
       };
     });
-  }, [dataSource]);
+  }, [dataSource, option]);
   return { columns };
 };

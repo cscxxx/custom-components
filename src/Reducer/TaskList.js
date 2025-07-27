@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-export default function TaskList({tasks, onChangeTask, onDeleteTask}) {
+export default function TaskList({ tasks, onChangeTask, onDeleteTask }) {
   return (
     <ul>
       {tasks.map((task) => (
@@ -12,7 +12,7 @@ export default function TaskList({tasks, onChangeTask, onDeleteTask}) {
   );
 }
 
-function Task({task, onChange, onDelete}) {
+function Task({ task, onChange, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
   let taskContent;
   if (isEditing) {

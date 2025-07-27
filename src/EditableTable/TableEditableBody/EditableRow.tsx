@@ -1,15 +1,31 @@
 import { Form } from "antd";
-import React from "react";
-import { useStore } from "../CTX.ts";
-import { EditableRowProps } from "../types";
-import { EditableRowContext } from "./RowCTX.ts";
+import React, { useEffect } from "react";
+import { useStore } from "../ctx.ts";
+// import { EditableRowProps } from "../types";
 
-export const EditableRow: React.FC<EditableRowProps> = ({
-  index,
-  ...props
-}) => {
+export const EditableRow: React.FC = ({ ...props }) => {
   const { dataSource, setDataSource } = useStore();
   const [form] = Form.useForm();
+  useEffect(() => {
+    form &&
+      setDataSource((prev) => {
+        const newData = [...prev];
+        const index = newData.findIndex(
+          (item) => item.key.toString() === props["data-row-key"]
+        );
+        const item = newData[index];
+        newData.splice(index, 1, {
+          ...item,
+          form: form,
+        });
+        return newData;
+      });
+    try {
+      form.validateFields();
+    } catch (error) {
+      console.log(error);
+    }
+  }, [form]);
   return (
     <Form
       form={form}
@@ -31,12 +47,10 @@ export const EditableRow: React.FC<EditableRowProps> = ({
             return newData;
           });
       }}
-      // validateTrigger={["onBlur"]}
+      // validateTrigger={["onBlur", "onChange"]}
       component={false}
     >
-      <EditableRowContext.Provider value={{ form }}>
-        <tr {...props} />
-      </EditableRowContext.Provider>
+      <tr {...props} />
     </Form>
   );
 };

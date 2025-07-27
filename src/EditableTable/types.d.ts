@@ -1,4 +1,4 @@
-import { RuleObject } from "antd/lib/form";
+import { FormInstance, RuleObject } from "antd/lib/form";
 import Table from "antd/lib/table/Table";
 
 export interface Item {
@@ -9,26 +9,21 @@ export interface Item {
 }
 
 export interface EditableCellProps {
-  title: React.ReactNode;
   editable: boolean;
   children: React.ReactNode;
   dataIndex: keyof Item;
-  record: Item;
   rules: RuleObject[];
   valueType: string;
   options?: { label: string; value: string }[];
-  handleSave: (record: Item) => void;
-}
-
-export interface EditableRowProps {
-  index: number;
 }
 
 export interface DataType {
   key: React.Key;
   name: string;
-  age: string;
-  address: string;
+  age: undefined | number;
+  address1: string;
+  address2?: string;
+  form?: FormInstance;
 }
 
 type EditableTableProps = Parameters<typeof Table>[0];
