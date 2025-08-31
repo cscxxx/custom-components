@@ -5,9 +5,17 @@ import UseReducerTaskApp from "./Reducer/index";
 import CTXAndReducer from "./CTXAndReducer/index";
 // import UseReducerTaskApp from "./UseReducerTaskApp/index";
 import Temp from "./temp/index.tsx";
-
 import FormPage from "./FormPage/index.tsx";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App.tsx";
 
-createRoot(document.getElementById("container") as HTMLElement).render(
-  <Temp />
+const container = document.getElementById("container");
+const root = createRoot(container as HTMLElement);
+
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>
 );
